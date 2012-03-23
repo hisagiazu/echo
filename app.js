@@ -4,6 +4,7 @@
  */
 
 var express = require('express')
+  , io = require('socket.io')
   , routes = require('./routes');
 
 var app = module.exports = express.createServer();
@@ -33,3 +34,12 @@ app.get('/', routes.index);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+
+// Socket.io
+var socket = io.listen(app);
+socket.sockets.on('connection',function(client){
+  client.emit('news', {hello: 'world'});
+  client.on('my other event', function(data){
+    console.log(data);
+  });
+});
